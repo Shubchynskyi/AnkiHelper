@@ -27,8 +27,10 @@ public class TranslationExtractorProcessor extends TextProcessor {
         if (parts.length < 3) {
             throw new IllegalArgumentException("Неверный формат строки: " + line);
         }
-        String translation = parts[2].substring(parts[2].indexOf('(') + 1, parts[2].lastIndexOf(')')); // Извлекаем перевод
-        String partWithoutTranslation = parts[2].substring(0, parts[2].indexOf('(')).trim(); // Удаляем перевод из исходной части
+        // Извлекаем перевод
+        String translation = parts[2].substring(parts[2].indexOf('(') + 1, parts[2].lastIndexOf(')'));
+        // Удаляем перевод из исходной части
+        String partWithoutTranslation = parts[2].substring(0, parts[2].indexOf('(')).trim();
         // Возвращаем строку в новом формате, заменив исходную часть без перевода
         return String.format("%s\t%s\t%s\t%s", parts[0], parts[1], partWithoutTranslation, translation);
     }
