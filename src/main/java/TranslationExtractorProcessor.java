@@ -22,7 +22,9 @@ public class TranslationExtractorProcessor extends TextProcessor {
         writeLines(processedLines, outputFilePath);
     }
 
-    private String processLine(String line) {
+    // todo количество строк вынести в переменную для работы с разными
+    private String processLine(String line, int stringCount) {
+        stringCount = 3;
         String[] parts = line.split("\t");
         if (parts.length < 3) {
             throw new IllegalArgumentException("Неверный формат строки: " + line);
@@ -33,6 +35,23 @@ public class TranslationExtractorProcessor extends TextProcessor {
         String partWithoutTranslation = parts[2].substring(0, parts[2].indexOf('(')).trim();
         // Возвращаем строку в новом формате, заменив исходную часть без перевода
         return String.format("%s\t%s\t%s\t%s", parts[0], parts[1], partWithoutTranslation, translation);
+    }
+
+    private String processLine(String line) {
+
+
+//        String translation = line.substring(line.indexOf('(') + 1, line.lastIndexOf(')'));
+        try {
+            // Извлекаем перевод
+            String translation = line.substring(line.indexOf('(') + 1, line.lastIndexOf(')'));
+            // Удаляем перевод из исходной части
+            String partWithoutTranslation = line.substring(0, line.indexOf('(')).trim();
+            // Возвращаем строку в новом формате, заменив исходную часть без перевода
+            return String.format("%s\t%s", partWithoutTranslation, translation);
+        } catch (Exception e){
+            System.err.println("break: " + line);
+        }
+        return line;
     }
 }
 

@@ -46,20 +46,54 @@ public class GapFillProcessor extends TextProcessor {
         writeLines(processedLines, outputFilePath);
     }
 
+//    private String processLine(String line) {
+//        int firstParenthesisIndex = line.indexOf('(');
+//        int lastParenthesisIndex = line.indexOf(')');
+//
+//        String partBeforeParentheses = line.substring(0, firstParenthesisIndex).trim();
+//        String partBetweenParentheses = line.substring(firstParenthesisIndex + 1, lastParenthesisIndex).trim();
+//
+//        // Обрабатываем строку до скобки
+//        String processedPartBeforeParentheses = Arrays.stream(partBeforeParentheses.split("\\s+"))
+//                .map(word -> wordsSet.contains(word.toLowerCase()) ? "{{c1::" + word + "}}" : word)
+//                .collect(Collectors.joining(" "));
+//
+//        // Собираем итоговую строку
+//        return processedPartBeforeParentheses + "\t" + partBetweenParentheses + "\t" + partBeforeParentheses;
+//    }
+
+
+
     private String processLine(String line) {
-        int firstParenthesisIndex = line.indexOf('(');
-        int lastParenthesisIndex = line.indexOf(')');
+        // Разбиваем строку на слова, сохраняя знаки пунктуации
+        return Arrays.stream(line.split("\\s+"))
+                .map(word -> {
+                    // Определяем, есть ли знак пунктуации в конце слова
+                    String punctuation = word.replaceAll("[\\wа-яА-Я]+", ""); // Удаляем все, кроме знаков пунктуации
+                    String cleanWord = word.replaceAll("\\p{Punct}", ""); // Удаляем знаки пунктуации из слова
 
-        String partBeforeParentheses = line.substring(0, firstParenthesisIndex).trim();
-        String partBetweenParentheses = line.substring(firstParenthesisIndex + 1, lastParenthesisIndex).trim();
-
-        // Обрабатываем строку до скобки
-        String processedPartBeforeParentheses = Arrays.stream(partBeforeParentheses.split("\\s+"))
-                .map(word -> wordsSet.contains(word.toLowerCase()) ? "{{c1::" + word + "}}" : word)
+                    // Проверяем, находится ли "очищенное" слово в списке
+                    if (wordsSet.contains(cleanWord.toLowerCase())) {
+                        // Если да, оборачиваем слово и возвращаем с пунктуацией
+                        return "{{c1::" + cleanWord + "}}" + punctuation;
+                    } else {
+                        // Если слово не в списке, возвращаем как есть
+                        return word;
+                    }
+                })
                 .collect(Collectors.joining(" "));
+    }
 
-        // Собираем итоговую строку
-        return processedPartBeforeParentheses + "\t" + partBetweenParentheses + "\t" + partBeforeParentheses;
+
+
+    public static void main(String[] args) {
+        try {
+            GapFillProcessor processor = new GapFillProcessor("workFiles/GapFillProcessor/inputFile.txt", "workFiles/GapFillProcessor/words.txt");
+            processor.process();
+            System.out.println("Обработка завершена успешно.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
