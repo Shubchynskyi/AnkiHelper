@@ -184,7 +184,9 @@ public class ArticleToFrontProcessor extends TextProcessor {
 
     public static void main(String[] args) {
         try {
-            ArticleToFrontProcessor processor = new ArticleToFrontProcessor("workFiles/ArticleToFrontProcessor/inputFile.txt", true);
+            ArticleToFrontProcessor processor = new ArticleToFrontProcessor(
+                            "workFiles/ArticleToFrontProcessor/inputFile.txt",
+                            false);
             processor.process();
             System.out.println("Обработка завершена успешно.");
         } catch (IOException e) {

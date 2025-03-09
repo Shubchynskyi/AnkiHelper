@@ -26,22 +26,36 @@ public class ColorArticleTextProcessor extends TextProcessor {
         String firstWord = parts[0];
         String restOfLine = parts.length > 1 ? " " + parts[1] : "";
 
-        String coloredWord = colorWord(firstWord);
+        String coloredWord = colorWord(firstWord, restOfLine); // pass restOfLine as second argument
         return coloredWord + restOfLine;
     }
 
-    private String colorWord(String word) {
-        return switch (word) {
-            case "der" -> "<span style=\"color: rgb(42, 170, 225); font-weight: bold;\">" + word + "</span>"; // Синий + жирный
-            case "das" -> "<span style=\"color: rgb(42, 170, 3); font-weight: bold;\">" + word + "</span>"; // Зеленый + жирный
-            case "die" -> "<span style=\"color: rgb(225, 42, 42); font-weight: bold;\">" + word + "</span>"; // Красный + жирный
-            default -> word; // Возвращает слово без изменений, если оно не соответствует ни одному из условий
-        };
+    private String colorWord(String word, String restOfLine) {
+        String color;
+        switch (word) {
+            case "der":
+                color = "rgb(42, 170, 225)"; // Синий
+                break;
+            case "das":
+                color = "rgb(42, 170, 3)"; // Зеленый
+                break;
+            case "die":
+                if (restOfLine.contains("(Pl.)")) {
+                    color = "rgb(255, 165, 0)"; // Оранжевый
+                } else {
+                    color = "rgb(225, 42, 42)"; // Красный
+                }
+                break;
+            default:
+                return word; // Если слово не является артиклем, возвращаем его без изменений
+        }
+        return "<span style=\"color: " + color + "; font-weight: bold;\">" + word + "</span>";
     }
 
     public static void main(String[] args) {
         try {
-            ColorArticleTextProcessor processor = new ColorArticleTextProcessor("workFiles/ColorArticleTextProcessor/inputFile.txt");
+            ColorArticleTextProcessor processor = new ColorArticleTextProcessor(
+                    "workFiles/ColorArticleTextProcessor/inputFile.txt");
             processor.process();
             System.out.println("Обработка завершена успешно.");
         } catch (IOException e) {

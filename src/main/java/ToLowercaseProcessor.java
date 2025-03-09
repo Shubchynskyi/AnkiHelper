@@ -14,6 +14,7 @@ public class ToLowercaseProcessor extends TextProcessor {
 
         List<String> processedLines = lines.stream()
                 .map(String::toLowerCase) // Преобразование каждой строки в строчные символы
+                .map(String::trim)
                 .collect(Collectors.toList());
 
         // Создание выходного файла в директории, соответствующей имени класса

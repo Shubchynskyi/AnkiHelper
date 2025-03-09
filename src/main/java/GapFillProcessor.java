@@ -15,7 +15,7 @@ public class GapFillProcessor extends TextProcessor {
         super(inputFilePath);
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(wordsFilePath);
         if (inputStream == null) {
-            // Если файл с словами находится в файловой системе
+            // Если файл со словами находится в файловой системе
             Path wordsPath = Paths.get(wordsFilePath);
             if (Files.exists(wordsPath)) {
                 inputStream = new FileInputStream(wordsPath.toFile());
@@ -37,7 +37,7 @@ public class GapFillProcessor extends TextProcessor {
 
         List<String> processedLines = lines.stream()
                 .filter(line -> !line.trim().isEmpty())
-                .map(this::processLine)
+                .map(this::processLineSimple) // todo выбрать обработку
                 .collect(Collectors.toList());
 
         // Создание выходного файла в директории, соответствующей имени класса
@@ -61,6 +61,12 @@ public class GapFillProcessor extends TextProcessor {
 //        // Собираем итоговую строку
 //        return processedPartBeforeParentheses + "\t" + partBetweenParentheses + "\t" + partBeforeParentheses;
 //    }
+
+
+    private String processLineSimple (String line) {
+
+        return "{{c1::" + line + "}}";
+    }
 
 
 
